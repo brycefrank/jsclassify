@@ -1,3 +1,6 @@
+# A quick script to read the data from each band.
+# I did not want to struggle with JS I/O so I used Python
+
 import csv
 from PIL import Image
 import numpy as np
@@ -23,9 +26,6 @@ def hold():
                 #values_arr.append(im_arr[y][x])
             print(values_arr)
 
-# For each tiff
-    # Open the tiff
-
 xs = [training_df["x"][i] for i in range(len(training_df))]
 ys = [training_df["y"][i] for i in range(len(training_df))]
 
@@ -36,4 +36,4 @@ for tif in tifs:
     training_df[tif[-7:-4]] = series
 
 training_df.to_csv(r"data/training_final.csv")
-training_df.to_json(r"uhhhh")
+training_df.to_json(r"training_data.json")
