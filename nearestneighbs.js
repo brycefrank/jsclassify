@@ -16,9 +16,15 @@ for (var i = 0; i < Object.keys(dataset).length; i++) {
   }
 }
 
-get_band_row = function(n) {
+get_row = function(n, set) {
   //Returns the nth row of a javascript object bands.
-  col_names = band_array;
+  if (set == "whole") {
+    var col_names = Object.keys(dataset);
+  }
+  else if (set == "bands") {
+    var col_names = band_array;
+  }
+
   row_array = [];
   for (var i = 0; i < col_names.length; i++) {
     col = col_names[i];
@@ -49,9 +55,9 @@ build_distances = function() {
   // the given record number
   for (var i = 0; i < size; i ++) {
     var band_col = [];
-    array1 = get_band_row(i);
+    array1 = get_row(i, "bands");
     for (var j = 0; j < size; j++) {
-      array2 = get_band_row(j);
+      array2 = get_row(j, "bands");
       var col = j+'';
       band_col.push(euc_dist_10(array1, array2));
     }
@@ -81,9 +87,3 @@ function nn_index(arr) {
     }
     return maxIndex;
 }
-
-copydist = dataset["0"]
-
-dist_from_zero = dataset["0"]
-
-//console.log(nn_index(dist_from_zero))
