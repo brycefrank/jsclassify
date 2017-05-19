@@ -82,7 +82,8 @@ function nn_index(arr) {
     return maxIndex;
 }
 
-//dist_from_zero = dataset["0"]
-//console.log(dist_from_zero)
+copydist = dataset["0"]
+
+dist_from_zero = dataset["0"]
 
 //console.log(nn_index(dist_from_zero))
