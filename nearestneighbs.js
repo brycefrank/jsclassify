@@ -68,8 +68,18 @@ build_distances = function() {
 
 build_distances()
 
+get_attributes = function(col, value) {
+  // Counts the number of rows given some column and some value within that column.
+  var count = 0;
+  for (var i = 0; i < size; i++) {
+    if (dataset[col][i] == value) {
+      count+=1;
+    }
+  }
+  return count;
+}
 
-function nn_index(arr) {
+nn_index = function(arr) {
   // Get some starting values.
   k_inds = []
   if (arr[0] != 0) {

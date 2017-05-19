@@ -1,8 +1,4 @@
-// A function to find the indices of the n minimum values in an array.
-
-
-
-function get_min(arr) {
+get_min = function(arr) {
   // Find a value that is not 0 to start
   for (var i = 0; i < arr.length; i++) {
     if (arr[i] != 0) {
@@ -20,12 +16,11 @@ function get_min(arr) {
   return min_ind;
 }
 
-function near_inds(arr, n) {
-  var temp_arr = arr;
+near_inds = function(arr, n) {
   var inds = [];
   var holdover = [];
   for (var i = 0; i < n; i++) {
-    ind = get_min(temp_arr);
+    ind = get_min(arr);
     holdover.push(arr[ind])
     inds.push(ind)
     arr[ind] = 0;
@@ -37,7 +32,7 @@ function near_inds(arr, n) {
   return inds;
 }
 
-function check(id) {
+check = function(id) {
   closest_id = near_inds(dataset[id], 1); // Get the nearest neighbor id
   if (dataset["forested"][id] == dataset["forested"][closest_id]) {
     return 1;
@@ -46,9 +41,40 @@ function check(id) {
   }
 }
 
-var j = 0
-for (var i = 0; i < size; i++) {
-  j += check(i);
-}
+confusion_matrix = function() {
+  // Constructs a confusion matrix from the dataset and NN analysis.
+  // This is the main analysis function for the script...for now?
+  var n = size;
+  var act_forest = get_attributes("forested", 1);
+  var act_non_forest = get_attributes("forested", 0);
 
-console.log(j / size);
+  // Confusion variables
+  // TODO: Think of ways to clean these?
+  var PFAF = 0;
+  var PNAF = 0;
+  var PFAN = 0;
+  var PNAN = 0;
+
+  for (var i = 0; i < size; i++) {
+      actual = dataset["forested"][i];
+      near_ind = near_inds(dataset[i], 1)[0];
+      predicted = dataset["forested"][near_ind];
+      //console.log(actual);
+      if ((predicted == 1) && (actual == 1)){
+        PFAF+= 1;
+      }
+      else if ((predicted == 0) && (actual == 1)){
+        PNAF += 1;
+      }
+      else if ((predicted == 1) && (actual == 0)){
+        PFAN += 1;
+      }
+      else if ((predicted == 0) && (actual == 0)){
+        PNAN += 1;
+      }
+  }
+  console.log(PFAF);
+  console.log(PNAF);
+  console.log(PFAN);
+  console.log(PNAN);
+}
