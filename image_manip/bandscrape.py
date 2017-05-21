@@ -1,5 +1,6 @@
 # A quick script to read the data from each band.
 # I did not want to struggle with JS I/O so I used Python
+# to convert to
 
 import csv
 from PIL import Image
