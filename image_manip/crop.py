@@ -7,17 +7,10 @@ import numpy as np
 import pandas as pd
 im1 = r"C:\Programming\jsclassify\assets\natcolor.jpg"
 
+files = os.listdir(os.path.join("..", "assets"))
+band_list = [file[:3] for file in files if file.startswith("b") and file.endswith("TIF")]
 
-def scrape(im, top_left,):
-    """Scrapes the input image for all band data from the assets directory.
-
-    :param im: The input image object. Probably cropped.
-    :param top_left: The top left coordinate tuple (x,y) of the original sample location.
-    :return:
-    """
-    pass
-
-def generate_samples(im, n, s_height, s_width):
+def generate_samples(im, n, s_height, s_width, export = True):
     """Generates n random image samples from the input image
 
     :param im: The input image to generate samples from.
@@ -40,7 +33,6 @@ def generate_samples(im, n, s_height, s_width):
     width, height = im_o.size
 
     # Create pandas dataframe for holding image data
-
     sample_im_df = pd.DataFrame()
 
     for i in range(n):
@@ -51,25 +43,37 @@ def generate_samples(im, n, s_height, s_width):
 
         # Crop the image and save the display version
         cropped = im_o.crop((rand_x, rand_y, rand_x + s_width, rand_y + s_height))
-        # cropped.save(os.path.join("samplestest", "samp{0}.jpg".format(i)))
 
-        # Append ID column to dataframe.
-        id_series = np.full((1, s_width * s_height), i)[0]
-        id_col = pd.DataFrame(id_series, columns=["PictureID"])
+        if export:
+            cropped.save(os.path.join("samplestest", "samp{0}.jpg".format(i)))
 
-        sample_im_df = sample_im_df.append(id_col)
-        sample_im_df["x"] = np.full((1, s_width * s_height), 0)[0]
-        sample_im_df["y"] = np.full((1, s_width * s_height), 0)[0]
+        window = np.indices((s_height, s_width))
+        col_inds = window[0].reshape(window[0].size) +rand_x
+        row_inds = window[1].reshape(window[1].size)+ rand_y
 
-        for tif in open_tifs:
-            crop_df = pd.DataFrame(crop_arr).stack().rename_axis(['y', 'x']).reset_index(name='val')
-            sample_im_df = sample_im_df.join(crop_df)
+        image_df = pd.DataFrame()
+        image_df["x"] = pd.Series(col_inds)
+        image_df["y"] = pd.Series(row_inds)
+        image_df["PictureId"] = i
 
-    print(sample_im_df.head())
-
-
-
-
+        for etif in enumerate(open_tifs):
+            # Piece apart the enumerate
+            band_id = band_list[etif[0]]
+            band = etif[1]
 
 
-generate_samples(im1, 3, 400, 400)
+            # Get the subset of the band array.
+            crop_arr = band[top_left[1]:top_left[1] + s_height,
+                       top_left[0]: top_left[0] + s_width]
+
+            image_df["{0}".format(band_id)] = crop_arr.reshape((1, crop_arr.size))[0]
+
+
+        sample_im_df = sample_im_df.append(image_df)
+
+    return sample_im_df
+
+
+samps = generate_samples(im1, 1, 400, 400, export = True)
+
+print(samps)
