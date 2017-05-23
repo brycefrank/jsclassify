@@ -5,7 +5,7 @@ var training = new Dataframe(training_var);
 var t1 = training.get_row("bands", 22);
 var s1 = sample5.get_row("bands", 450);
 
-var cap = 30000;
+var cap = sample5.size;
 sample5.frame = build_distances(sample5, training, cap);
 
 
