@@ -85,9 +85,10 @@ near_inds = function(arr, n) {
   return inds;
 }
 
-check = function(id, sample, training) {
-  closest_id = near_inds(sample.frame[id], 1); // Get the nearest neighbor id
-  return training.frame["forested"][closest_id]
+impute = function(id, sample, training) {
+  // Get the forested value of the nearest training point
+  var closest_id = near_inds(sample.frame[id+''], 1)[0];
+  return training.frame["forested"][closest_id];
 }
 
 confusion_matrix = function() {
