@@ -25,7 +25,7 @@ def hold():
                 x = int(line[0])
                 y = int(line[1])
                 #values_arr.append(im_arr[y][x])
-            print(values_arr)
+            #print(values_arr)
 
 xs = [training_df["x"][i] for i in range(len(training_df))]
 ys = [training_df["y"][i] for i in range(len(training_df))]

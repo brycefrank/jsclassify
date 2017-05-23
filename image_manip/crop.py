@@ -48,8 +48,8 @@ def generate_samples(im, n, s_height, s_width, export = True):
             cropped.save(os.path.join("samplestest", "samp{0}.jpg".format(i)))
 
         window = np.indices((s_height, s_width))
-        col_inds = window[0].reshape(window[0].size) +rand_x
-        row_inds = window[1].reshape(window[1].size)+ rand_y
+        col_inds = window[0].reshape(window[0].size) + rand_x
+        row_inds = window[1].reshape(window[1].size) + rand_y
 
         image_df = pd.DataFrame()
         image_df["x"] = pd.Series(col_inds)
@@ -73,7 +73,26 @@ def generate_samples(im, n, s_height, s_width, export = True):
 
     return sample_im_df
 
+# Generate the samples
+#samps = generate_samples(im1, 10, 400, 400, export = True)
+# Pickle this dataframe for later.
+#samps.to_pickle("sampspickle")
 
-samps = generate_samples(im1, 1, 400, 400, export = True)
+# # Remove some of the weird ones from the data frame.
+df1 = pd.read_pickle("sampspickle")
+#
+remove = [0, 1, 2, 3, 4, 6, 8, 9]
 
-print(samps)
+for i in remove:
+    df1 = df1[df1.PictureId != i]
+
+
+# Now split into a dataframe for each remaining image
+
+df1g = df1.groupby("PictureId")
+
+# df1 = df1.reset_index()
+# df1.to_json("sampsjs")
+
+for name, group in df1g:
+    group.to_json("samp{0}.json".format(group["PictureId"].unique()[0]))
