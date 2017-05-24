@@ -38,4 +38,19 @@ function Dataframe(json) {
     }
     return count;
   }
+
+  this.get_average_cluster = function(forest) {
+    var band_avgs = [];
+    for (var i = 0; i < this.band_array.length; i++) {
+      var total = 0;
+      for (var j = 0; j < this.size; j++){
+        if (this.frame["forested"][j] == forest) {
+          total += this.frame[this.band_array[i]][j];
+        }
+
+      }
+      band_avgs.push(total / this.size);
+    }
+    return band_avgs;
+  }
 }

@@ -86,9 +86,25 @@ near_inds = function(arr, n) {
 }
 
 impute = function(id, sample, training) {
-  // Get the forested value of the nearest training point
+  // Assign value based on distance from average
   var closest_id = near_inds(sample.frame[id+''], 1)[0];
   return training.frame["forested"][closest_id];
+}
+
+simple_impute = function(id, sample, training) {
+  var non_forested_arr = training.get_average_cluster(0);
+  var forested_arr = training.get_average_cluster(1);
+
+  var test_bands = sample.get_row("bands", id)
+
+  dist_non = euc_dist_10(test_bands, non_forested_arr);
+  dist_for = euc_dist_10(test_bands, forested_arr);
+
+  if (dist_non > dist_for) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 confusion_matrix = function() {
