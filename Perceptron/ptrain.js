@@ -23,36 +23,83 @@ for (var i = 0; i < training_df.size; i++) {
   perceptron1.train(inputs, desired);
 }
 
-// Check it again with the same data (I know...)
-
-var PFAF = 0;
-var PNAF = 0;
-var PFAN = 0;
-var PNAN = 0;
-
-for (var i = 0; i < training_df.size; i++) {
-  var inputs = training_df.get_row("bands", i);
-  var actual = convert(training_df.frame["forested"][i]);
-  var predicted = perceptron1.feedforward(inputs);
-
-  if ((predicted == 1) && (actual == 1)){
-    PFAF+= 1;
-  }
-  else if ((predicted == -1) && (actual == 1)){
-    PNAF += 1;
-  }
-  else if ((predicted == 1) && (actual == -1)){
-    PFAN += 1;
-  }
-  else if ((predicted == -1) && (actual == -1)){
-    PNAN += 1;
-  }
+array_to_string = function(arr) {
+  // Outputs a new window with a string version of the processed array.
+  // TODO: DIY with run_nn.js, make a new script with things used by both analyses.
+  var j_string = JSON.stringify(arr);
+  var url = 'data:text/json;charset=utf8,' + encodeURIComponent(j_string);
+  window.open(url, '_blank');
+  window.focus; 
 }
 
-console.log(PFAF);
-console.log(PNAF);
-console.log(PFAN);
-console.log(PNAN);
+
+binary_convert = function(arr) {
+  // Converts the perceptron (-1, 1) array into a binary (0, 1) array.
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] == -1) {
+      arr[i] = 0;
+    }
+  } 
+  return arr;
+}
+
+run_neural_net = function(sample, training) {
+   var binary_arr = [];
+   for (var i = 0; i < sample.size; i++) {
+    var inputs = sample.get_row("bands", i);
+    var actual = convert(training.frame["forested"][i]);
+    var predicted = perceptron1.feedforward(inputs);
+
+    // Push the resulte to binary_arr
+    binary_arr.push(predicted);
+  }
+  binary_arr = binary_convert(binary_arr);
+  array_to_string(binary_arr);
+}
 
 confusion_matrix = function() {
+  var PFAF = 0;
+  var PNAF = 0;
+  var PFAN = 0;
+  var PNAN = 0;
+
+  // Create an empty array to save the information.
+  var binary_arr = [];
+
+  for (var i = 0; i < training_df.size; i++) {
+    var inputs = training_df.get_row("bands", i);
+    var actual = convert(training_df.frame["forested"][i]);
+    var predicted = perceptron1.feedforward(inputs);
+    
+    // Push the resulte to binary_arr
+    binary_arr.push(predicted);
+
+    if ((predicted == 1) && (actual == 1)){
+      PFAF+= 1;
+    }
+    else if ((predicted == -1) && (actual == 1)){
+      PNAF += 1;
+    }
+    else if ((predicted == 1) && (actual == -1)){
+      PFAN += 1;
+    }
+    else if ((predicted == -1) && (actual == -1)){
+      PNAN += 1;
+    }
+  }
+
+  binary_arr = binary_convert(binary_arr);
+//  array_to_string(binary_arr);
+  console.log(PFAF);
+  console.log(PNAF);
+  console.log(PFAN);
+  console.log(PNAN);
 }
+
+//confusion_matrix();
+
+var sample7 = new Dataframe(samp7);
+var sample5 = new Dataframe(samp5);
+
+run_neural_net(sample5, training_df);
+

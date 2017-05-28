@@ -27,4 +27,4 @@ function Perceptron(n) {
       this.weights[i] += this.c * error * inputs[i];
     }
   }
-}
+ }
