@@ -63,7 +63,7 @@ build_distances = function(sample, training, cap) {
       band_col.push(euc_dist_10(array1, array2));
     }
     col = i+'';
-    sample[col] = band_col;
+    sample.frame[col] = band_col;
   }
   return sample;
 }
@@ -107,12 +107,14 @@ simple_impute = function(id, sample, training) {
   }
 }
 
-confusion_matrix = function() {
+confusion_matrix = function(training_df) {
   // Constructs a confusion matrix from the dataset and NN analysis.
   // This is the main analysis function for the script...for now?
-  var n = size;
-  var act_forest = get_attributes("forested", 1);
-  var act_non_forest = get_attributes("forested", 0);
+  var n = training_df.size;
+  var act_forest = training_df.get_attributes("forested", 1);
+  var act_non_forest = training_df.get_attributes("forested", 0);
+  training_df = build_distances(training_df, training_df, training_df.size);
+  console.log(training_df);
 
   // Confusion variables
   // TODO: Think of ways to clean these?
@@ -121,10 +123,10 @@ confusion_matrix = function() {
   var PFAN = 0;
   var PNAN = 0;
 
-  for (var i = 0; i < size; i++) {
-      actual = dataset["forested"][i];
-      near_ind = near_inds(dataset[i], 1)[0];
-      predicted = dataset["forested"][near_ind];
+  for (var i = 0; i < training_df.size; i++) {
+      actual = training_df.frame["forested"][i];
+      near_ind = near_inds(training_df.frame[i], 1)[0];
+      predicted = training_df.frame["forested"][near_ind];
       //console.log(actual);
       if ((predicted == 1) && (actual == 1)){
         PFAF+= 1;

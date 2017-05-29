@@ -5,8 +5,11 @@
 var sample5 = new Dataframe(samp5);
 var sample7 = new Dataframe(samp7);
 
+console.log(sample5.size)
+
 // Set the training data.
 var training = new Dataframe(training_var);
+
 
 run_nn = function(dataframe, cap) {
   var pixel_array = [];
@@ -15,7 +18,7 @@ run_nn = function(dataframe, cap) {
     pixel_array.push(impute(i, dataframe, training))
   }
   var j_string = JSON.stringify(pixel_array);
-  var url = 'data:text/json;charset=utf8,' + encodeURIComponent(data);
+  var url = 'data:text/json;charset=utf8,' + encodeURIComponent(j_string);
   window.open(url, '_blank');
   window.focus();
 }

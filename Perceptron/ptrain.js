@@ -17,11 +17,16 @@ convert = function(n) {
 }
 
 // Train the perceptron
-for (var i = 0; i < training_df.size; i++) {
-  var inputs = training_df.get_row("bands", i);
-  var desired = convert(training_df.frame["forested"][i]);
-  perceptron1.train(inputs, desired);
+train = function() {
+  for (var i = 0; i < training_df.size; i++) {
+    var inputs = training_df.get_row("bands", i);
+    var desired = convert(training_df.frame["forested"][i]);
+    perceptron1.train(inputs, desired);
+  }
 }
+
+train();
+
 
 array_to_string = function(arr) {
   // Outputs a new window with a string version of the processed array.
@@ -29,7 +34,7 @@ array_to_string = function(arr) {
   var j_string = JSON.stringify(arr);
   var url = 'data:text/json;charset=utf8,' + encodeURIComponent(j_string);
   window.open(url, '_blank');
-  window.focus; 
+  window.focus;
 }
 
 
@@ -39,7 +44,7 @@ binary_convert = function(arr) {
     if (arr[i] == -1) {
       arr[i] = 0;
     }
-  } 
+  }
   return arr;
 }
 
@@ -70,7 +75,7 @@ confusion_matrix = function() {
     var inputs = training_df.get_row("bands", i);
     var actual = convert(training_df.frame["forested"][i]);
     var predicted = perceptron1.feedforward(inputs);
-    
+
     // Push the resulte to binary_arr
     binary_arr.push(predicted);
 
@@ -89,17 +94,20 @@ confusion_matrix = function() {
   }
 
   binary_arr = binary_convert(binary_arr);
-//  array_to_string(binary_arr);
+
   console.log(PFAF);
   console.log(PNAF);
   console.log(PFAN);
   console.log(PNAN);
 }
 
-//confusion_matrix();
+confusion_matrix();
 
-var sample7 = new Dataframe(samp7);
-var sample5 = new Dataframe(samp5);
 
-run_neural_net(sample5, training_df);
+// Initialize the sample data.
+//var sample7 = new Dataframe(samp7);
+//var sample5 = new Dataframe(samp5);
 
+//Create the binaries
+//run_neural_net(sample5, training_df);
+//run_neural_net(sample7, training_df);
